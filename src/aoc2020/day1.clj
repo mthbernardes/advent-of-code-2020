@@ -3,7 +3,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
-(def input (->> "input" io/resource slurp string/split-lines (map edn/read-string)))
+(def input-data (->> "input" io/resource slurp string/split-lines (map edn/read-string)))
 
 (def test-data [1721 979 366 299 675 1456])
 
@@ -11,17 +11,19 @@
 (defn subset [number set-of-numbers]
   (->> set-of-numbers
        (map #(if (not (= number %))
-               (conj [] number %)))
+               (apply sorted-set (conj #{} number %))))
        (filter identity)))
 
 (defn sum-equal-2020 [values]
   (let [sum (reduce + values)]
     (when (= 2020 sum) values)))
 
-(->> (map #(subset % input) input)
+(->> (map #(subset % input-data) input-data)
      (reduce concat)
      (map sum-equal-2020)
-     (filter identity))
+     (filter identity)
+     set
+     first)
 
 ;; part 2
 
@@ -40,14 +42,12 @@
        (reduce concat)
        (filter identity)))
 
-(defn find-it [input-data]
-  (->> input-data
-       all-combinations
-       (map #(subset-three % input-data))
-       flatten
-       (filter identity)
-       set
-       (map sum-equal-2020)
-       (filter identity)))
-
-(find-it test-data)
+(->> input-data
+     all-combinations
+     (map #(subset-three % input-data))
+     flatten
+     (filter identity)
+     set
+     (map sum-equal-2020)
+     (filter identity)
+     first)
