@@ -3,7 +3,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
-(def input-data (->> "input" io/resource slurp string/split-lines (map edn/read-string)))
+(def input-data (->> "day1_input" io/resource slurp string/split-lines (map edn/read-string)))
 
 (def test-data [1721 979 366 299 675 1456])
 
